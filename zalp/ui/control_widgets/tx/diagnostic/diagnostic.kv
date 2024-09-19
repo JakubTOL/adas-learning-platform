@@ -1,0 +1,157 @@
+#: import common_widgets common_widgets
+#: import TRANSPARENT colors.TRANSPARENT
+
+#: set service_color 1, 1, 1, .2
+#: set subfunction_even_color 1, 1, 1, .05
+#: set subfunction_odd_color 1, 1, 1, .1
+
+#: set uds_log_entry_header_tx 1, 1, 1, .1
+#: set uds_log_entry_data_tx 1, 1, 1, .07
+#: set uds_log_entry_header_rx 1, 1, 1, .15
+#: set uds_log_entry_data_rx 1, 1, 1, .13
+
+<DiagnosticWidget>:
+    services_scroll_view: services_scroll_view
+    uds_log_scroll_view: uds_log_scroll_view
+    selected_subfunction: services_scroll_view.selected_subfunction
+    tester_present_active_checkbox: tester_present_active_checkbox
+
+    cols: 1
+
+    GridLayout:
+        rows: 1
+
+        padding: 20
+        spacing: 20
+        GridLayout:
+            cols: 1
+            size_hint_x: 0.618
+            DiagnosticServicesScrollView:
+                id: services_scroll_view
+            AdaptableHeightGridLayout:
+                rows: 1
+                CheckBox:
+                    id: tester_present_active_checkbox
+                    color: 1, 1, 1, 1
+                    on_state: root.set_tester_present(app)
+                AdaptableHeightLabel:
+                    size_hint_x: 3
+                    text: 'TesterPresent wysyłany'
+        GridLayout:
+            cols: 1
+            GridLayout:
+                cols: 1
+                SelectedSubfunctionDetailsView:
+                    id: selected_subfunction_details_view
+                    selected_subfunction: root.selected_subfunction
+                AdaptableHeightButton:
+                    height: 30
+                    text: 'Wyślij'
+                    on_press: root.send_request(app)
+                    disabled: True if services_scroll_view.tree.selected_node is None or root.request_in_progress else False
+            UdsLogScrollView:
+                id: uds_log_scroll_view
+                size_hint_y: 2
+            AdaptableHeightButton:
+                height: 20
+                text: "Wyczyść"
+                on_press: uds_log_scroll_view.clear_entries()
+
+<SelectedSubfunctionDetailsView>:
+    cols: 1
+    Label:
+        text: 'Wybierz usługę z listy' if root.selected_subfunction is None else root.selected_subfunction.name
+    Label:
+        text: '' if root.selected_subfunction is None else root.selected_subfunction.data_str
+
+<DiagnosticServicesScrollView>:
+    tree: tree
+    selected_subfunction: self.tree.selected_node.subfunction if self.tree.selected_node else None
+
+    TreeView:
+        id: tree
+        hide_root: True
+        size_hint_y: None  # for scrolling in ScrollView
+        height: self.minimum_height
+
+<DiagnosticServiceNode>:
+    height: 40
+    no_selection: True
+
+    even_color: service_color
+    odd_color: service_color
+
+    Label:
+        text: root.name
+
+<DiagnosticSubFunctionNode>:
+    height: 35
+
+    even_color: subfunction_even_color
+    odd_color: subfunction_odd_color
+
+    Label:
+        text: root.name
+
+<UdsLogScrollView>:
+    layout: layout
+
+    AdaptableHeightGridLayout:
+        id: layout
+        cols: 1
+        spacing: 5
+
+<UdsLogEntry>:
+    cols: 1
+    size_hint_y: None
+    height: self.minimum_height
+    spacing: 5
+
+    canvas.before:
+        Color:
+            rgba: uds_log_entry_data_rx if root.direction is root.Direction.RX else uds_log_entry_data_tx
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    AdaptableHeightGridLayout:
+        rows: 1
+        padding: (3, 3)
+        canvas.before:
+            Color:
+                rgba: uds_log_entry_header_rx if root.direction is root.Direction.RX else uds_log_entry_header_tx
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        Label:
+            text: str(root.timestamp)
+            text_size: self.parent.width * self.size_hint_x / len(self.parent.children), None
+        Label:
+            text: root.direction.name
+            size_hint_x: 0.5
+            text_size: self.parent.width * self.size_hint_x / len(self.parent.children), None
+        AdaptableHeightLabel:
+            canvas.before:
+                Color:
+                    rgba: root.entry_color[root.status] if root.direction is root.Direction.RX else TRANSPARENT
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            text: root.name
+            size_hint_x: 2
+            text_size: self.parent.width * self.size_hint_x / len(self.parent.children), None
+
+    AdaptableHeightLabel:
+        text: str(root.data)
+        text_size: self.parent.width, None
+    AdaptableHeightLabel:
+        # another background rectangle on interpreted data to pop it out a little bit
+        canvas.before:
+            Color:
+                rgba: uds_log_entry_data_rx if root.direction is root.Direction.RX else uds_log_entry_data_tx
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        text: root.interpreted_data
+        text_size: self.parent.width, None
+

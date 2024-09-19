@@ -1,0 +1,2 @@
+class KoradIncorrectResponseException(Exception):
+    pass

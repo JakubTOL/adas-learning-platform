@@ -1,0 +1,106 @@
+#: import common_widgets common_widgets
+
+<HorizontalControlWidget>:
+    # Override title in concrete HorizontalControlWidgets
+    title: 'Default widget title'
+
+    orientation: 'vertical'
+    size_hint_y: None
+    height: self.minimum_height
+
+    # gray background just to see the widgets
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 0.2
+        Rectangle:
+            pos: self.pos
+            size: self.size
+#    Label:
+#        text: root.title
+#        bold: True
+#        font_size: 20
+#
+#        # Make title always the same size
+#        size_hint_y: None
+#        height: 40
+##        minimum_height: 40
+##        size: self.texture_size
+#        # dark gray background to separate title and content
+#        canvas.before:
+#            Color:
+#                rgba: 1, 1, 1, 0.1
+#            Rectangle:
+#                pos: self.pos
+#                size: self.size
+
+#    BoxLayout:
+#        id: layout
+#        orientation: 'vertical'
+#
+#        size_hint_y: None
+#        height: self.minimum_height
+#        padding: 5, 0
+
+<HorizontalControlWidgetLayout>:
+    orientation: 'vertical'
+
+    size_hint_y: None
+    height: self.minimum_height
+    padding: 5, 0
+
+<HorizontalControlWidgetLabel>:
+    bold: True
+    font_size: 20
+
+    # Make title always the same size
+    size_hint_y: None
+    height: 40
+    # dark gray background to separate title and content
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 0.1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<DetectedSignWidget>:
+    title: 'Wykryty znak'
+    AdaptableHeightGridLayout:
+        id: content_layout
+        rows: 1
+        AdaptableHeightLabel:
+            text: "Wykryty znak"
+        AdaptableHeightLabel:
+            text: "Wykryty znak pomocniczy"
+
+<DetectedLinesWidget>:
+    title: 'Wykryte linie'
+    AdaptableHeightGridLayout:
+#        size_hint_y: 8
+        id: content_layout
+        cols: 3
+        AdaptableHeightGridLayout:
+            rows: 4
+            AdaptableHeightLabel:
+                bold: True
+                text: "Lewa krawędź"
+            AdaptableHeightLabel:
+                text: "Typ lini"
+            AdaptableHeightLabel:
+                text: "Kolor lini"
+            AdaptableHeightLabel:
+                text: "Dystans do lini"
+        AdaptableHeightGridLayout:
+            rows: 4
+            AdaptableHeightLabel:
+                bold: True
+                text: "Prawa krawędź"
+            AdaptableHeightLabel:
+                text: "Typ lini"
+            AdaptableHeightLabel:
+                text: "Kolor lini"
+            AdaptableHeightLabel:
+                text: "Dystans do lini"
+        AdaptableHeightLabel:
+            text: "Status wykrycia lini"
+

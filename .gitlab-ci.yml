@@ -1,0 +1,51 @@
+# This file is a template, and might need editing before it works on your project.
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Python.gitlab-ci.yml
+workflow:
+  rules:
+    # in merge requests
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: always
+    # in commits to main branch
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: always
+    # manually via "Run pipeline"
+    - if: $CI_PIPELINE_SOURCE == 'web'
+      when: always
+
+# Official language image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/python/tags/
+image: python:3.11
+
+# Change pip's cache directory to be inside the project directory since we can
+# only cache local items.
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+# Pip's cache doesn't store the python packages
+# https://pip.pypa.io/en/stable/topics/caching/
+#
+# If you want to also cache the installed packages, you have to install
+# them in a virtualenv and cache it as well.
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+
+before_script:
+  - python --version  # For debugging
+  - python -m pip install virtualenv
+  - virtualenv venv
+  - .\venv\Scripts\activate.ps1
+  - python -m pip install -r requirements.txt
+  # install kivy manually, until kivy wheels for Python 3.11 are available
+  - python -m pip config set global.trusted-host "kivy.org"
+  - python -m pip config set global.http.sslVerify false
+  - python -m pip install kivy --pre --no-deps --index-url  https://kivy.org/downloads/simple/
+  - python -m pip install "kivy[base]" --pre --extra-index-url https://kivy.org/downloads/simple/
+
+test:
+  script:
+    - pytest

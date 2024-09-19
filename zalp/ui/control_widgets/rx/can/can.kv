@@ -1,0 +1,57 @@
+#: set header_color 1, 1, 1, .3
+#: set frame_color 1, 1, 1, .2
+#: set signal_even_color 1, 1, 1, .05
+#: set signal_odd_color 1, 1, 1, .1
+
+<CanTreeView>:
+    hide_root: True
+    size_hint_y: None  # for scrolling in ScrollView
+    height: self.minimum_height
+
+<CanFrameHeaderTreeViewNode>:
+    height: 40
+    no_selection: True
+    odd_color: header_color
+    even_color: header_color
+    Label:
+        bold: True
+        text: 'Czas'
+    Label:
+        bold: True
+        text: 'Kierunek'
+    Label:
+        bold: True
+        text: 'ID'
+    Label:
+        bold: True
+        text: 'Nazwa'
+    Label:
+        bold: True
+        text: 'Dane'
+
+<CanFrameTreeViewNode>:
+    height: 35
+    even_color: frame_color
+    odd_color: frame_color
+    Label:
+        text: str(root.timestamp)
+    Label:
+        text: root.direction.name
+    Label:
+        text: f'0x{root.frame_id:X}'
+    Label:
+        text: root.name
+    Label:
+        text: root.data_str
+
+
+<CanSignalTreeViewNode>:
+    height: 30
+    even_color: signal_even_color
+    odd_color: signal_odd_color
+    Label:
+        text: root.name
+    Label
+        text: str(root.value)
+    Label
+        text: str(root.raw_value)

@@ -1,0 +1,35 @@
+#: import common_widgets common_widgets
+
+<TrafficSignWidget>:
+    title: 'Wykryte znaki drogowe'
+
+    AdaptableHeightGridLayout:
+        cols: 1
+        spacing: (0, 5)
+        padding: (0, 5)
+        AdaptableHeightGridLayout:
+            rows: 1
+            AdaptableHeightLabel:
+                text: 'Wykryty znak'
+                bold: True
+            AdaptableHeightLabel:
+                text: root.sign_name
+                canvas.before:
+                    Color:
+                        rgba: root.sign_name_color
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+        AdaptableHeightGridLayout:
+            rows: 1
+            AdaptableHeightLabel:
+                text: 'Status wykrytego znaku'
+                bold: True
+            AdaptableHeightLabel:
+                text: root.sign_status_text[root.sign_status]
+                canvas.before:
+                    Color:
+                        rgba: root.sign_status_color[root.sign_status]
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos

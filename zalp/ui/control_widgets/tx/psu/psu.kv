@@ -1,0 +1,46 @@
+#: import common_widgets common_widgets
+
+<PsuControlWidget>:
+    id: psu_control_widget
+    title: 'Zasilanie kamery'
+
+    toggle_output_button: toggle_output_button
+    AdaptableHeightGridLayout:
+        padding: (0, 5)
+        rows: 1
+        AdaptableHeightLabel:
+            text: 'Napięcie'
+            bold: True
+        AdaptableHeightLabel:
+            text: 'Prąd'
+            bold: True
+        AdaptableHeightLabel:
+            text: 'WŁ/WYŁ'
+            bold: True
+    AdaptableHeightGridLayout:
+        rows: 1
+        Label:
+            text: str(root.voltage) + ' V'
+        Label:
+            text: f'{root.current:5.3f}' + ' A'
+        AdaptableHeightGridLayout:
+            rows: 1
+            height: 40
+            ToggleButton:
+                id: toggle_output_button
+                size_hint_x: 2
+                bold: True
+                state: 'normal'
+                text: 'WŁ' if self.state == 'down' else 'WYŁ'
+                disabled: True
+            Button:
+                id: on_button
+                text: 'WŁ'
+                on_press: root.set_output(app, True)
+            Button:
+                id: off_button
+                text: 'WYŁ'
+                on_press: root.set_output(app, False)
+
+
+

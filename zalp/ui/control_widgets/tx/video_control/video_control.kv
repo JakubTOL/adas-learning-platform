@@ -1,0 +1,36 @@
+#: import common_widgets common_widgets
+
+<VideoControlWidget>:
+    id: video_control_widget
+
+    start_button: start_button
+    pause_button: pause_button
+#    stop_button: stop_button
+    load_button: load_button
+
+    spacing: 20
+    rows: 1
+    Button:
+        id: load_button
+        bold: True
+        text: 'Wczytaj'
+        disabled: False
+        on_press: root.load_movie(app)
+    Button:
+        id: start_button
+        bold: True
+        text: 'Start'
+        disabled: False
+        on_press: root.start_player(app)
+    Button:
+        id: pause_button
+        bold: True
+        text: 'Pauza'
+        disabled: False
+        on_press: root.pause_player(app)
+#    Button:
+#        id: stop_button
+#        bold: True
+#        text: 'Stop'
+#        disabled: True
+#        on_press: root.stop_player()

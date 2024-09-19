@@ -1,0 +1,160 @@
+#: import common_widgets common_widgets
+#: import GREEN colors.GREEN
+#: import BRAND_MIDDLE_BLUE colors.BRAND_MIDDLE_BLUE
+
+#: set step_even_color 1, 1, 1, .05
+#: set step_odd_color 1, 1, 1, .08
+
+<StepDisplayWidget>:
+    step_list_widget: step_list_widget
+    next_step_button_widget: next_step_button_widget
+    step_description_user_input_widget: step_description_user_input_widget
+    scenario_progress_widget: scenario_progress_widget
+
+    cols: 1
+
+    GridLayout:
+        rows: 1
+        StepListWidget:
+            id: step_list_widget
+
+            size_hint_x: 0.8
+        NextStepButtonWidget
+            id: next_step_button_widget
+
+            size_hint_x: 0.2
+    ScenarioProgressWidget:
+        id: scenario_progress_widget
+
+    StepDescriptionUserInputWidget:
+        id: step_description_user_input_widget
+
+
+<StepListWidget>:
+    layout: layout
+
+    GridLayout:
+        id: layout
+        cols: 1
+#        spacing: 10
+#        padding: [40, 20]
+        height: self.minimum_height
+        size_hint_y: None  # needed for scrolling
+
+        StepWidget:
+            text: 'Dummy krok 1'
+        StepWidget
+            text: 'Dummy krok 2'
+        StepWidget
+            text: 'Dummy krok 3'
+
+<StepWidget>:
+    step_widget_index: step_widget_index
+    step_widget_label: step_widget_label
+    step_widget_checkbox: step_widget_checkbox
+
+    index: 0
+    name: 'Default step text'
+
+    rows: 1
+    size_hint_y: None
+    # Step will be sized according to text height
+    height: self.step_widget_label.height
+
+    canvas.before:
+        Color:
+            rgba: step_odd_color if root.index % 2 else step_even_color
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    Label:
+        id: step_widget_index
+        size_hint_x: 0.1
+        font_size: 20
+        text: str(root.index) + '.'
+        bold: root.active
+    Label:
+        id: step_widget_label
+        size_hint_x: 0.7
+        font_size: 20
+
+        size: self.texture_size
+        padding_y: 10
+        text: root.name
+        bold: root.active
+    CheckBox:
+        id: step_widget_checkbox
+        size_hint_x: 0.2
+
+        # User cannot change the state by clicking
+        disabled: True
+        # But still can be set programmatically
+        # active: True
+
+        # Even if it's disabled, show it normally
+        background_checkbox_disabled_down: 'atlas://data/images/defaulttheme/checkbox_on'
+        background_checkbox_disabled_normal: 'atlas://data/images/defaulttheme/checkbox_off'
+
+<NextStepButtonWidget>:
+    text: 'Dalej'
+
+    # Normally disabled, enabled only when step is waiting
+    disabled: True
+    on_press: self.request_next_step(app)
+
+<ScenarioProgressWidget>:
+    size_hint_y: None
+    height: self.minimum_height
+    canvas.before:
+        Color:
+            rgba: BRAND_MIDDLE_BLUE if root.is_in_progress else GREEN
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    AdaptableHeightLabel:
+        text: 'Scenariusz w toku' if root.is_in_progress else """Scenariusz zakończony, kliknij 'Powrót' aby wybrać inny scenariusz"""
+        font_size: 18
+
+<StepDescriptionUserInputWidget>:
+    id: layout
+    rows: 1
+
+
+<StepDescriptionWidget>:
+    layout: layout
+    step_description_content: step_description_content
+
+    GridLayout:
+        id: layout
+        cols: 1
+        size_hint_y: None  # needed for scrolling
+        height: self.minimum_height
+        Label:
+            id: step_description_content
+            text: 'Zrób to i tamto...'
+            markup: True
+            padding_x: 20
+            padding_y: 10
+            font_size: 17
+            text_size: root.width, None
+            size_hint_y: None
+            size: self.texture_size
+
+<UserInputWidget>:
+    user_text_input: user_text_input
+
+    cols: 1
+    AdaptableHeightTextInput:
+        id: user_text_input
+        multiline: False
+        padding: [4] * 4
+        size_hint_y: .8
+        font_size: 18
+        halign: 'center'
+        hint_text: 'Wpisz odpowiedź i sprawdź poprawność.'
+    Button:
+        id: check_button
+        text: 'Sprawdź'
+        disabled: root.checked_ok
+        on_press: root.check_user_input()

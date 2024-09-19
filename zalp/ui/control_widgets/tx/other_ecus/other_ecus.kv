@@ -1,0 +1,62 @@
+#: import common_widgets common_widgets
+
+<OtherEcusWidget>:
+    bcm_status_choice_widget: bcm_status_choice_widget
+    acc_status_choice_widget: acc_status_choice_widget
+    abs_status_choice_widget: abs_status_choice_widget
+    title: 'Stan innych ECU'
+
+    AdaptableHeightGridLayout:
+        cols: 1
+        spacing: (0, 5)
+        padding: (0, 5)
+        AdaptableHeightGridLayout:
+            rows: 1
+            AdaptableHeightLabel:
+                text: 'Status BCM'
+            EcuStatusChoiceWidget:
+                id: bcm_status_choice_widget
+                group: 'BCM'
+                set_callback: root.set_bcm_status
+        AdaptableHeightGridLayout:
+            rows: 1
+            AdaptableHeightLabel:
+                text: 'Status ACC'
+            EcuStatusChoiceWidget:
+                id: acc_status_choice_widget
+                group: 'ACC'
+                set_callback: root.set_acc_status
+        AdaptableHeightGridLayout:
+            rows: 1
+            AdaptableHeightLabel:
+                text: 'Status ABS'
+            EcuStatusChoiceWidget:
+                id: abs_status_choice_widget
+                group: 'ABS'
+                set_callback: root.set_abs_status
+
+<EcuStatusChoiceWidget>:
+    group: ''
+    set_callback: None
+    not_present_button: not_present_button
+    ok_button: ok_button
+    fail_button: fail_button
+
+    ToggleButton:
+        id: not_present_button
+        text: 'Brak'
+        group: root.group
+        allow_no_selection: False
+        on_press: root.set_callback(app, 'Not Present')
+    ToggleButton:
+        id: ok_button
+        text: 'OK'
+        group: root.group
+        allow_no_selection: False
+        on_press: root.set_callback(app, 'OK')
+    ToggleButton:
+        id: fail_button
+        text: 'Błąd'
+        group: root.group
+        allow_no_selection: False
+        on_press: root.set_callback(app, 'Fail')

@@ -1,0 +1,49 @@
+### common
+pytest~=7.2.0
+python-dotenv~=0.21.0
+pytest-dotenv
+wrapt~=1.14.1
+
+# code visualisation
+pylint
+graphviz
+
+# profiling
+viztracer
+snakeviz
+
+### ui
+# kivy commented out, wheels for Python 3.11 not available
+# install manually by:
+# python -m pip install kivy --pre --no-deps --index-url  https://kivy.org/downloads/simple/
+# python -m pip install "kivy[base]" --pre --extra-index-url https://kivy.org/downloads/simple/
+
+# kivy
+
+### domain
+# cantools not yet released with the fix for Tester that is needed.
+# Use the latest tested version from Github.
+cantools @ git+https://github.com/cantools/cantools.git@e206109
+udsoncan~=1.17.1
+
+# Package PyOpenGL-3.1.6-cp311-cp311-win_amd64 needs to be installed manually using wheel.
+# Otherwise, VideoPlayerInternal will fail on function glutInit.
+# https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyopengl
+# Use command "python -m pip install <path_to_whl>" to install.
+
+# pyglview on fork contains borderless window functionality
+# Replace when PR will be merged to the parent repository
+# https://github.com/aieater/python_glview/pull/2
+pyglview @ git+https://github.com/deronek/python_glview.git@29ad554
+fpstimer~=0.0.1
+
+### infrastructure
+python-can~=4.2.2
+can-isotp
+pyserial~=3.5
+
+wrapt~=1.14.1
+Kivy~=2.2.0.dev0
+kivymd~=1.1.1
+opencv-python~=4.7.0.68
+bitstruct~=8.17.0

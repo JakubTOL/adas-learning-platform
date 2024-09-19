@@ -1,0 +1,90 @@
+
+<MeterLabelWidget>:
+    Label:
+#        size: root.parent.width / 2, root.parent.height
+        text: root.value_text + ' m'
+        text_size: self.size
+        halign: 'right' if root.direction_left else 'left'
+
+<SteeringWheelWidget>:
+    center_position: 0, 0  # default value
+    size_hint_y: None
+    radius: 20
+    canvas:
+        # main steering wheel circle
+        Color:
+            rgb: root.get_steering_wheel_color(root.value_left, root.value_right)
+        Line:
+            circle: root.parent.center_x, root.parent.center_y - 20, root.radius
+            width: 3
+        # small lines
+        Line:
+            points: (root.parent.center_x - root.radius, root.parent.center_y - 20, root.parent.center_x + root.radius, root.parent.center_y - 20)
+            width: 3
+        Line:
+            points: (root.parent.center_x, root.parent.center_y - 20, root.parent.center_x, root.parent.center_y - 40)
+            width: 2
+
+        # road path
+#        Color:
+#            rgb: 1, 1, 1  # white
+#        Line:
+#            points: (root.parent.center_x, root.parent.center_y - 45, root.parent.center_x, root.parent.center_y + 40)
+#            width: 1  # must be 1 in order for dashes to work
+#            dash_length: 8
+#            dash_offset: 5
+
+<LineWidget>:
+    direction_left: False  # default value
+
+    # internal helper variables
+    offset_y: -40
+
+    canvas:
+        Color:
+            rgb: root.line_color[root.value]
+        Line:
+            points: (root.parent.center_x + (-50 if root.direction_left else 50), root.parent.center_y + root.offset_y, root.parent.center_x + (-50 if root.direction_left else 50) + (25 if root.direction_left else -25), root.parent.center_y + root.offset_y + 80)
+            width: 3
+
+
+
+<LineDetectionWidget>:
+    left_meter_label: left_meter_label
+    left_line_widget: left_line_widget
+    steering_wheel_widget: steering_wheel_widget
+    right_line_widget: right_line_widget
+    right_meter_label: right_meter_label
+
+    title: 'Wykryte linie'
+
+    size_hint_y: None
+    height: 200
+
+    GridLayout:
+        rows: 1
+        size_hint_y: None
+        minimum_height: root.height
+        spacing: 30
+
+        MeterLabelWidget:
+            id: left_meter_label
+            direction_left: True
+#            pos_hint: {'left': 0.4}
+#            x: root.center_x - 100
+        LineWidget:
+            id: left_line_widget
+            direction_left: True
+            size_hint_x: 0
+        SteeringWheelWidget:
+            id: steering_wheel_widget
+            size_hint_x: 0
+        LineWidget:
+            id: right_line_widget
+            direction_left: False
+            size_hint_x: 0
+        MeterLabelWidget:
+            id: right_meter_label
+            direction_left: False
+#            pos_hint: {'right': 0.4}
+#            x: root.center_x + 100

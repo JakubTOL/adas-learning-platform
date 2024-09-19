@@ -1,0 +1,62 @@
+#: import common_widgets common_widgets
+
+<CameraStatusWidget>:
+    title: 'Status kamery'
+
+    AdaptableHeightGridLayout:
+        cols: 1
+        spacing: (0, 5)
+        padding: (0, 5)
+
+        AdaptableHeightGridLayout:
+            rows: 1
+            AdaptableHeightLabel:
+                text: 'Status komunikacji z kamerą'
+                bold: True
+            AdaptableHeightLabel:
+                text: root.comms_status_text
+                canvas.before:
+                    Color:
+                        rgba: root.calibration_blockage_status_color[root.comms_status_text]
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+        AdaptableHeightGridLayout:
+            rows: 1
+            AdaptableHeightLabel:
+                text: 'Status funkcji wizyjnej'
+                bold: True
+            AdaptableHeightLabel:
+                text: root.vision_status_text[root.vision_status]
+                canvas.before:
+                    Color:
+                        rgba: root.vision_status_color[root.vision_status]
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+        AdaptableHeightGridLayout:
+            rows: 1
+            AdaptableHeightLabel:
+                text: 'Status kalibracji'
+                bold: True
+            AdaptableHeightLabel:
+                text: root.calibration_status
+                canvas.before:
+                    Color:
+                        rgba: root.calibration_blockage_status_color[root.calibration_status]
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+        AdaptableHeightGridLayout:
+            rows: 1
+            AdaptableHeightLabel:
+                text: 'Blokada wizyjna'
+                bold: True
+            AdaptableHeightLabel:
+                text: root.blockage_status
+                canvas.before:
+                    Color:
+                        rgba: root.calibration_blockage_status_color[root.blockage_status]
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos

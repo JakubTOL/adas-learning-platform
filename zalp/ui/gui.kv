@@ -1,0 +1,648 @@
+#: import os os
+#: import functools functools
+
+#:import hexColor kivy.utils.get_color_from_hex
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+#:import TextInput kivy.uix.textinput
+#:import DropDown kivy.uix.dropdown
+
+#: import control_widgets_views control_widgets.control_widgets_views
+#: import ScenarioListDropDown scenario_list.ScenarioListDropDown
+#: import StepDisplayWidget step_list.step_list
+
+### Resources
+#: set resources_path os.path.join(os.getcwd(), 'resources')
+#: set background_image os.path.join(resources_path, 'background2.jpg')
+#: set start_image os.path.join(resources_path, 'System_Blue.jpg')
+
+#########################################################################################################################
+#                                       STARTUP WINDOW
+#########################################################################################################################
+<StartUpWindow>:
+    BoxLayout:
+        # box orientation
+        orientation: 'vertical'
+        # set canvas for background image
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: root.width, root.height
+                source: start_image
+        Button:
+            text: "\n\n\n\n\n\n\n\n\n\n\n\n\n\nNaciśnij aby rozpocząć!"
+            pos_hint :{'center_x':0.5, 'center_y':0}
+            size_hint: 1000, 100
+            # set opacity ratio
+            background_color: (0.0, 0.0, 0.0, 0.0)
+            font_size: 40
+            on_release:
+                root.manager.transition = FadeTransition()
+                root.manager.transition.direction = 'up'
+                root.manager.current = 'scenario_runner_window'
+#########################################################################################################################
+#                                       MAIN WINDOW
+#########################################################################################################################
+<MainWindow>:
+    GridLayout:
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: root.width, root.height
+                source: background_image
+        rows:3
+
+        BoxLayout:
+            # box orientation
+            orientation:'horizontal'
+            # distance between box layout and children [left,top,right,bottom]
+            padding: [(root.width/1.19),0,0,0]
+            # distance between childrens in box layout
+            spacing: 5
+
+        BoxLayout:
+            # box orientation
+            orientation:'vertical'
+            # distance between childrens in box layout
+            spacing: 10
+            Button:
+                id: scenario_btn
+                text: 'Scenariusze testowe'
+                size_hint: .4, 0
+                pos_hint :{'center_x':0.5, 'center_y':0.5}
+                # set opacity ratio
+                background_color: (0.8, 0.8, 0.8, 0.8)
+                font_size: 20
+                on_press:
+                    root.manager.transition = FadeTransition()
+                    root.manager.transition.direction = 'up'
+                    root.manager.current = 'scenario_runner_window'
+
+            Button:
+                id: manual_mode_btn
+                text: 'Obsługa ręczna'
+                disabled: True
+                size_hint: .4, 0
+                pos_hint :{'center_x':0.5, 'center_y':0.5}
+                # set opacity ratio
+                background_color: (0.8, 0.8, 0.8, 0.8)
+                font_size: 20
+                on_press:
+                    root.manager.transition = FadeTransition()
+                    root.manager.transition.direction = 'up'
+                    root.manager.current = 'manual_window'
+        BoxLayout:
+            orientation: 'horizontal'
+            # distance between box layout and children [left,top,right,bottom]
+            padding: [(root.width/1.5),0,0,0]
+            # distance between childrens in box layout
+            spacing: 5
+            Button:
+                id: exit_btn
+                text: 'Powrót do ekranu głównego'
+                size_hint: .3, 0
+                # set opacity ratio
+                background_color: (0.8, 0.8, 0.8, 0.8)
+                font_size: 20
+                on_press:
+                    root.manager.transition = FadeTransition()
+                    root.manager.transition.direction = 'up'
+                    root.manager.current = 'startup_window'
+#########################################################################################################################
+#                                       SCENARIO RUNNER
+#########################################################################################################################
+<ScenarioRunnerWindow>:
+    tutorial_btn: tutorial_btn
+    spinner_id: spinner_id
+    scenario_name_label: scenario_name_label
+    scenario_description_label: scenario_description_label
+
+    GridLayout:
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: root.width, root.height
+                source: background_image
+        rows:5
+
+        # pad from top
+        BoxLayout:
+            orientation:'horizontal'
+            padding: [(root.width/1.15),0,0,0]
+            spacing: 5
+
+        BoxLayout:
+            # box orientation
+            orientation:'horizontal'
+            # distance between childrens in box layout
+            spacing: 10
+            ToggleButton:
+                id: tutorial_btn
+                text: 'Scenariusze demonstracyjne'
+                size_hint: .5, 0
+                # set opacity ratio
+                background_color: (0.8, 0.8, 0.8, 0.8)
+                font_size: 20
+                # set default state on start
+                state: 'down'
+                # assign to group to allow only one to be 'down'
+                group: 'mode_selection'
+                allow_no_selection: False
+                # behavior when toggled 'down'
+                on_state: root.update_scenario_list()
+
+            ToggleButton:
+                id: challenge_btn
+                text: 'Zadania do wykonania'
+                size_hint: .5, 0
+                # set opacity ratio
+                background_color: (0.8, 0.8, 0.8, 0.8)
+                font_size: 20
+                # assign to group to allow only one to be 'down'
+                group: 'mode_selection'
+                allow_no_selection: False
+                # behavior when toggled 'down'
+                on_state: None
+
+        BoxLayout:
+            orientation:'vertical'
+            spacing: 5
+            Label:
+                id: scenario_name_label
+                text: 'Brak wybranego scenariusza'
+                font_size: 18
+            Label:
+                id: scenario_description_label
+                text: ''
+                font_size: 16
+        BoxLayout:
+            Spinner:
+                id: spinner_id
+                # top listed thing
+                text: 'Lista scenariuszy...'
+                font_size:20
+#               values: root.get_scenario_list(app)
+                # set color to brand_blue
+                background_color: hexColor('#1179BF')
+                on_text: root.choose_scenario()
+                dropdown_cls: ScenarioListDropDown
+            Button:
+                size_hint_x: 2
+                font_size:20
+                text: "Uruchom"
+                on_release:
+                    root.manager.transition = FadeTransition()
+                    root.manager.transition.direction = 'up'
+                    root.manager.current = 'scenario_window'
+                    #app.VideoPlayer()
+
+        BoxLayout:
+            orientation: 'horizontal'
+            # distance between box layout and children [left,top,right,bottom]
+            padding: [(root.width/1.5),0,0,0]
+            # distance between childrens in box layout
+            spacing: 5
+            Button:
+                id: scenario_runner_back_btn
+                text: 'Powrót'
+                size_hint: .1, 0
+                pos_hint :{'center_x':0.5, 'center_y':0.25}
+                background_color: (0.8, 0.8, 0.8, 0.8)
+                font_size: 20
+                on_press:
+                    root.manager.transition = FadeTransition()
+                    root.manager.transition.direction = 'down'
+                    # TODO: main window skipped for now.
+                    root.manager.current = 'startup_window'
+#                    root.manager.current = 'main_window'
+
+#########################################################################################################################
+#                                       SCENARIO WINDOW
+#########################################################################################################################
+<ScenarioWindow>:
+    control_widget_parent: control_widget_parent
+    rx_control_widget_tabbed_panel: rx_control_widget_tabbed_panel
+    tx_control_widget_tabbed_panel: tx_control_widget_tabbed_panel
+    step_display_widget: step_display_widget
+
+    # TODO: check if this behavior should be linked to the 'Run' button, instead, because
+    #       we finally we want to create different widgets based on the scenario selected
+    on_pre_enter: self.prepare_control_widgets(app)
+    on_leave: self.clear_control_widgets(app)
+    # set background image
+    canvas.before:
+        Rectangle:
+            pos: self.pos
+            size: root.width, root.height
+            source: background_image
+
+    StepDisplayWidget:
+        id: step_display_widget
+        size_hint: .8, .3
+        pos_hint: {'x': .1, 'y': .7}
+
+    BoxLayout:
+        id: control_widget_parent
+        size_hint: .9, .65
+        pos_hint: {'x': .05, 'y': .05}
+        spacing: 10
+
+        RxControlWidgetTabbedPanel
+            id: rx_control_widget_tabbed_panel
+        TxControlWidgetTabbedPanel
+            id: tx_control_widget_tabbed_panel
+
+    Button:
+        id: tutorial_back_btn
+        text: 'Powrót'
+        size_hint: .07, .04
+        #pos_hint :{'center_x':1, 'center_y':0.08}
+        pos_hint: {'x': 1 - self.width / root.size[0], 'y': 0}
+        background_color: (0.8, 0.8, 0.8, 0.8)
+        font_size: 20
+        on_press:
+            root.manager.transition = FadeTransition()
+            root.manager.transition.direction = 'down'
+            root.manager.current = 'scenario_runner_window'
+#    AnchorLayout:
+#        # position of anchor layout
+#        anchor_x: 'center'
+#        anchor_y: 'center'
+#        BoxLayout:
+#            orientation: 'vertical'
+#            # distance between box layout and children [left,top,right,bottom]
+#            padding: [10,0,0,150]
+#            # distance between childrens in box layout
+#            spacing: 5
+#
+#        BoxLayout:
+#            orientation: 'horizontal'
+#            padding: 10
+#            spacing: 5
+#            Label:
+#                text: 'to do'
+#                background_color: hexColor('#1179BF')
+#            BoxLayout:
+#                id:bl
+#                orientation: 'vertical'
+#                # distance between box layout and children [left,top,right,bottom]
+#                padding: 10, 10
+#                row_default_height: '48dp'
+#                row_force_default: True
+#                # distance between childrens in box layout
+#                spacing: 10
+#                ScrollView:
+#                    size: self.size
+#                    GridLayout:
+#                        id: layout_content
+#                        size_hint_y: None
+#                        cols: 1
+#                        row_default_height: '20dp'
+#                        row_force_default: True
+#                        spacing: 0, 0
+#                        padding: 0, 0
+#                        BoxLayout:
+#                            orientation: 'horizontal'
+#                            spacing: 5
+#                            Label:
+#                                text: 'Napięcie'
+#                            Label:
+#                                id: current_voltage
+#                                text: 'XX.X V'
+#                        Label:
+#                            text: 'obj 3'
+#                        Label:
+#                            text: 'obj 4'
+#                        Label:
+#                            text: 'obj 5'
+#                        Label:
+#                            text: 'obj 6'
+#                        Label:
+#                            text: 'obj 7'
+#                        Label:
+#                            text: 'obj 8'
+#                        Label:
+#                            text: 'obj 9'
+#            BoxLayout:
+#                id:bl2
+#                orientation: 'vertical'
+#                # distance between box layout and children [left,top,right,bottom]
+#                padding: 10, 10
+#                row_default_height: '48dp'
+#                row_force_default: True
+#                # distance between childrens in box layout
+#                spacing: 10
+#                ScrollView:
+#                    do_scroll: False, True # x_axis scroll, y_axis scroll
+#                    bar_width: dp(10)
+#                    scroll_type: ['bars','content'] # bar follows content scroll
+#                    size: self.size
+#                    GridLayout:
+#                        id: layout_content
+#                        size_hint_y: None
+#                        cols: 1
+#                        row_default_height: '20dp'
+#                        row_force_default: True
+#                        spacing: 0, 0
+#                        padding: 0, 0
+#                        BoxLayout:
+#                            orientation: 'horizontal'
+#                            canvas.before:
+#                                Color:
+#                                    rgba: 1,1,1,1
+#                                Rectangle:
+#                                    pos: self.pos
+#                                    size: self.size
+#                            Button:
+#                                id: set_user_voltage
+#                                text: 'Ustaw'
+#                                on_press:
+#                                    app.GetUserVoltage(textInput.text)
+#                            TextInput:
+#                                id: textInput
+#                                hint_text: 'Podaj wartość napięcia'
+#                                pos_hint:{'center_x':0.5,'center_y':0.7}
+#                                size_hint: (1.2, 1.3)
+#                                cursor_blink: True
+#                                use_bubble: True
+#                                multiline: False
+#                                disabled_foreground_color: hexColor("#363940")
+#                                input_filter: 'float'
+#                        BoxLayout:
+#                            orientation: 'horizontal'
+#                            spacing: 5
+#                            Button:
+#                                id: left_blinker
+#                                text: 'LEWO'
+#                                on_release:
+#                                    #app.XXXX()
+#                            Button:
+#                                id: right_blinker
+#                                text: 'PRAWO'
+#                                on_release:
+#                                    #app.XXXX()
+#                        Label:
+#                            text: 'obj 3'
+#                        Label:
+#                            text: 'obj 4'
+#                        Label:
+#                            text: 'obj 5'
+#                        Label:
+#                            text: 'obj 6'
+#                        Label:
+#                            text: 'obj 7'
+#                        Label:
+#                            text: 'obj 8'
+#        BoxLayout:
+#            orientation: 'horizontal'
+#            # distance between box layout and children [left,top,right,bottom]
+#            padding: [(root.width/1.5),0,0,0]
+#            # distance between childrens in box layout
+#            spacing: 5
+
+
+#########################################################################################################################
+#                                       TUTORIAL SCENARIOS
+#########################################################################################################################
+<TutorialScenariosWindow>:
+    AnchorLayout:
+        # position of anchor layout
+        anchor_x: 'center'
+        anchor_y: 'center'
+        BoxLayout:
+            orientation: 'vertical'
+            # distance between box layout and children [left,top,right,bottom]
+            padding: [10,0,0,150]
+            # distance between childrens in box layout
+            spacing: 5
+            # set background image
+            canvas.before:
+                Rectangle:
+                    pos: self.pos
+                    size: root.width, root.height
+                    source: background_image
+
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 10
+            spacing: 5
+            Label:
+                text: 'to do'
+                background_color: hexColor('#1179BF')
+            BoxLayout:
+                id:bl
+                orientation: 'vertical'
+                # distance between box layout and children [left,top,right,bottom]
+                padding: 10, 10
+                row_default_height: '48dp'
+                row_force_default: True
+                # distance between childrens in box layout
+                spacing: 10
+                ScrollView:
+                    size: self.size
+                    GridLayout:
+                        id: layout_content
+                        size_hint_y: None
+                        cols: 1
+                        row_default_height: '20dp'
+                        row_force_default: True
+                        spacing: 0, 0
+                        padding: 0, 0
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            spacing: 5
+                            Label:
+                                text: 'Napięcie'
+                            Label:
+                                id: current_voltage
+                                text: 'XX.X V'
+                        Label:
+                            text: 'obj 3'
+                        Label:
+                            text: 'obj 4'
+                        Label:
+                            text: 'obj 5'
+                        Label:
+                            text: 'obj 6'
+                        Label:
+                            text: 'obj 7'
+                        Label:
+                            text: 'obj 8'
+                        Label:
+                            text: 'obj 9'
+            BoxLayout:
+                id:bl2
+                orientation: 'vertical'
+                # distance between box layout and children [left,top,right,bottom]
+                padding: 10, 10
+                row_default_height: '48dp'
+                row_force_default: True
+                # distance between childrens in box layout
+                spacing: 10
+                ScrollView:
+                    do_scroll: False, True # x_axis scroll, y_axis scroll
+                    bar_width: dp(10)
+                    scroll_type: ['bars','content'] # bar follows content scroll
+                    size: self.size
+                    GridLayout:
+                        id: layout_content
+                        size_hint_y: None
+                        cols: 1
+                        row_default_height: '20dp'
+                        row_force_default: True
+                        spacing: 0, 0
+                        padding: 0, 0
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            canvas.before:
+                                Color:
+                                    rgba: 1,1,1,1
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size
+                            Button:
+                                id: set_user_voltage
+                                text: 'Ustaw'
+                                on_press:
+                                    app.GetUserVoltage(textInput.text)
+                            TextInput:
+                                id: textInput
+                                hint_text: 'Podaj wartość napięcia'
+                                pos_hint:{'center_x':0.5,'center_y':0.7}
+                                size_hint: (1.2, 1.3)
+                                cursor_blink: True
+                                use_bubble: True
+                                multiline: False
+                                disabled_foreground_color: hexColor("#363940")
+                                input_filter: 'float'
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            spacing: 5
+                            Button:
+                                id: left_blinker
+                                text: 'LEWO'
+                                on_release:
+                                    #app.XXXX()
+                            Button:
+                                id: right_blinker
+                                text: 'PRAWO'
+                                on_release:
+                                    #app.XXXX()
+                        Label:
+                            text: 'obj 3'
+                        Label:
+                            text: 'obj 4'
+                        Label:
+                            text: 'obj 5'
+                        Label:
+                            text: 'obj 6'
+                        Label:
+                            text: 'obj 7'
+                        Label:
+                            text: 'obj 8'
+        BoxLayout:
+            orientation: 'horizontal'
+            # distance between box layout and children [left,top,right,bottom]
+            padding: [(root.width/1.5),0,0,0]
+            # distance between childrens in box layout
+            spacing: 5
+            Button:
+                id: tutorial_back_btn
+                text: 'Back'
+                size_hint: .4, 0
+                pos_hint :{'center_x':1, 'center_y':0.08}
+                background_color: (0.8, 0.8, 0.8, 0.8)
+                font_size: 20
+                on_press:
+                    root.manager.transition = FadeTransition()
+                    root.manager.transition.direction = 'down'
+                    root.manager.current = 'scenario_runner_window'
+#########################################################################################################################
+#                                       CHALLENGE SCENARIOS
+#########################################################################################################################
+<ChallengeScenariosWindow>:
+    AnchorLayout:
+        # position of anchor layout
+        anchor_x: 'center'
+        anchor_y: 'center'
+
+        BoxLayout:
+            orientation: 'vertical'
+            # distance between box layout and children [left,top,right,bottom]
+            padding: [10,0,0,150]
+            # distance between childrens in box layout
+            spacing: 5
+            # set background image
+            canvas.before:
+                Rectangle:
+                    pos: self.pos
+                    size: root.width, root.height
+                    source: background_image
+
+            Button:
+                id: challenge_back_btn
+                text: 'Powrót'
+                size_hint: .4, 0
+                pos_hint :{'center_x':0.5, 'center_y':0.5}
+                background_color: (0.8, 0.8, 0.8, 0.8)
+                font_size: 20
+                on_press:
+                    root.manager.transition = FadeTransition()
+                    root.manager.transition.direction = 'down'
+                    root.manager.current = 'scenario_runner_window'
+#########################################################################################################################
+#                                       MANUAL SCENARIOS
+#########################################################################################################################
+<ManualModeWindow>:
+    GridLayout:
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: root.width, root.height
+                source: background_image
+        rows:3
+
+        BoxLayout:
+            # box orientation
+            orientation:'horizontal'
+            # distance between box layout and children [left,top,right,bottom]
+            padding: [(root.width/1.19),0,0,0]
+            # distance between childrens in box layout
+            spacing: 5
+
+        BoxLayout:
+            # box orientation
+            orientation:'vertical'
+            # distance between childrens in box layout
+            spacing: 10
+            Button:
+                text: 'Some widgets'
+                size_hint: .4, 0
+                pos_hint :{'center_x':0.5, 'center_y':0.5}
+                # set opacity ratio
+                background_color: (0.8, 0.8, 0.8, 0.8)
+                font_size: 20
+            Button:
+                text: 'Some widgets too'
+                size_hint: .4, 0
+                pos_hint :{'center_x':0.5, 'center_y':0.5}
+                # set opacity ratio
+                background_color: (0.8, 0.8, 0.8, 0.8)
+                font_size: 20
+
+        BoxLayout:
+            orientation: 'horizontal'
+            # distance between box layout and children [left,top,right,bottom]
+            padding: [(root.width/1.5),0,0,0]
+            # distance between childrens in box layout
+            spacing: 5
+            Button:
+                id: manual_back_btn
+                text: 'Back'
+                size_hint: .3, 0
+                pos_hint :{'center_x':0.5, 'center_y':0.5}
+                background_color: (0.8, 0.8, 0.8, 0.8)
+                font_size: 20
+                on_press:
+                    root.manager.transition = FadeTransition()
+                    root.manager.transition.direction = 'down'
+                    root.manager.current = 'main_window'

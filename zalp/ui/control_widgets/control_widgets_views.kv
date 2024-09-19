@@ -1,0 +1,64 @@
+<ControlWidgetTabbedPanel>:
+    do_default_tab: False
+
+    background_color: 1, 1, 1, 0.4
+
+
+<RxControlWidgetTabbedPanel>:
+    rx_tabbed_panel_item: rx_tabbed_panel_item
+    rx_tabbed_panel_content: rx_tabbed_panel_content
+    can_analyzer_tabbed_panel_item: can_analyzer_tabbed_panel_item
+    can_traffic_analyzer_widget_content: can_traffic_analyzer_widget_content
+
+    default_tab: rx_tabbed_panel_item
+    tab_width: root.width / 2
+
+    TabbedPanelItem:
+        id: rx_tabbed_panel_item
+        text: 'Rx'
+        RelativeLayout:
+            id: rx_tabbed_panel_content
+
+    TabbedPanelItem:
+        id: can_analyzer_tabbed_panel_item
+        text: 'CAN traffic analyzer'
+        RelativeLayout:
+            id: can_traffic_analyzer_widget_content
+
+<TxControlWidgetTabbedPanel>:
+    tx_tabbed_panel_item: tx_tabbed_panel_item
+    tx_tabbed_panel_content: tx_tabbed_panel_content
+    diagnostic_tabbed_panel_item: diagnostic_tabbed_panel_item
+    diagnostic_tabbed_panel_content: diagnostic_tabbed_panel_content
+    video_tabbed_panel_item: video_tabbed_panel_item
+    video_tabbed_panel_content: video_tabbed_panel_content
+
+    default_tab: tx_tabbed_panel_item
+    tab_width: root.width / 3
+
+    TabbedPanelItem:
+        id: tx_tabbed_panel_item
+        text: 'Tx'
+        RelativeLayout:
+            id: tx_tabbed_panel_content
+    TabbedPanelItem:
+        id: diagnostic_tabbed_panel_item
+        text: 'Diagnostyka UDS'
+        RelativeLayout:
+            id: diagnostic_tabbed_panel_content
+    TabbedPanelItem:
+        id: video_tabbed_panel_item
+        text: 'Sterowanie wideo'
+        RelativeLayout:
+            id: video_tabbed_panel_content
+
+<ControlWidgetsScrollView>:
+    layout: layout
+
+    GridLayout:
+        id: layout
+        cols: 1
+        spacing: 10
+        padding: [20, 20]
+        size_hint_y: None  # needed for scrolling
+        height: self.minimum_height

@@ -1,0 +1,46 @@
+#: import common_widgets common_widgets
+
+#: set catalog_color 1, 1, 1, .2
+#: set file_even_color 1, 1, 1, .05
+#: set file_odd_color 1, 1, 1, .1
+
+<VideoPlayerWidget>:
+    video_control_widget: video_control_widget
+    videolist_scroll_view: videolist_scroll_view
+
+    cols: 1
+    padding: 20
+    spacing: 20
+    VideoControlWidget:
+        id: video_control_widget
+    VideoListScrollView:
+        size_hint_y: 3
+        id: videolist_scroll_view
+
+
+<VideoListNode>:
+    height: 25
+    no_selection: True
+
+    even_color: catalog_color
+    odd_color: catalog_color
+
+    Label:
+        text: root.name
+
+<VideoListSubNode>:
+    height: 20
+
+    even_color: file_even_color
+    odd_color: file_odd_color
+
+<VideoListScrollView>:
+    tree: tree
+    # TODO: set center_y higher
+#    pos_hint: {'center_x': .5, 'center_y': .05}
+    # prepared fixed position for fullscreen mode display
+    # pos_hint: {'center_x': .5, 'center_y': .26}
+    TreeView:
+        id: tree
+        hide_root: True
+        size_hint_y: None  # for scrolling in ScrollView

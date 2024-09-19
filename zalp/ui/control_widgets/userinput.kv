@@ -1,0 +1,20 @@
+#: import Window kivy.core.window.Window
+
+<ScenarioUserInput>:
+    id: userinput
+    # Default displayed text
+    text: "Wpisz...."
+    # Size of input text. Default value is 15. Auto scaling box size with font_size prop.
+    font_size: 20
+    hint_text: 'Wpisz wymaganą infromację.'
+    # Force the highlight for required user input
+    focus: True
+    # Blink the cursor when focus is active
+    cursor_blink: True
+    # Can be used to indicate if cut/paste/copy was used
+    #use_bubble: True
+    multiline: False
+    disabled_foreground_color: hexColor("#363940")
+    # filter for user input. Available filters: int, float, string
+    #input_filter: 'float'
+    size_hint_x: (Window.width - (self.userinput_x * 2)) / Window.width

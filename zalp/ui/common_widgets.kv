@@ -1,0 +1,44 @@
+# File to include application-wide rules, like fonts, colors and widget settings.
+
+#: import OpacityScrollEffect kivy.effects.opacityscroll.OpacityScrollEffect
+
+<ScrollView>:
+    bar_width: 10
+    scroll_type: ['bars']
+    effect_cls: OpacityScrollEffect
+
+<CheckBox>:
+    color: 0, 0, 0, 1  # black is better visible on Blue brand background
+
+
+<Label>:
+    halign: 'center'
+    valign: 'center'
+
+
+# Convenience Widgets to create content-height-aware widgets,
+# e.g. Label will be automatically be the size of its text.
+# This is used to create dynamically resizable ControlWidgets inside
+# a ControlWidgetsScrollView.
+<AdaptableHeightGridLayout@GridLayout>:
+    size_hint_y: None
+    height: self.minimum_height
+
+<AdaptableHeightTextInput@TextInput>
+    size_hint_y: None
+    height: self.minimum_height
+
+<AdaptableHeightTreeView@TreeView>
+    hide_root: True
+    size_hint_y: None
+    height: self.minimum_height
+
+<AdaptableHeightButton@Button>:
+    size_hint_y: None
+
+<AdaptableHeightToggleButton@ToggleButton>:
+    size_hint_y: None
+
+<AdaptableHeightLabel@Label>:
+    size_hint_y: None
+    size: self.texture_size

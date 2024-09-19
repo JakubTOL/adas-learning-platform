@@ -1,0 +1,55 @@
+#: import common_widgets common_widgets
+
+<CarSignalsWidget>:
+    car_speed_input: car_speed_input
+    gauge: gauge
+    car_speed_valid_checkbox: car_speed_valid_checkbox
+    car_lines_enabled_checkbox: car_lines_enabled_checkbox
+    id: CarSignalsWidget
+    title: 'Stan samochodu'
+
+    AdaptableHeightGridLayout:
+        cols: 1
+        spacing: (0, 5)
+        padding: (0, 5)
+        AdaptableHeightGridLayout:
+        # TODO: fix mess with layouts to fit the Gauge as it doesn't size itself properly
+        #       it should be done at widget level
+            rows: 1
+            padding: (10, 0)
+            spacing: (20, 0)
+            Label:
+                text: 'Prędkość samochodu [km/h]'
+#                size_hint_x: None
+#                size: self.texture_size
+            AnchorLayout:
+#                size_hint_x: None
+#                width: 100
+                AdaptableHeightTextInput:
+                    id: car_speed_input
+                    multiline: False
+                    padding: [4] * 4
+                    on_focus: root.set_car_speed(app) if not self.focus else None
+            RelativeLayout:
+                size_hint: None, None
+                height: 90
+                width: 160
+                Gauge:
+                    id: gauge
+                    size_gauge: 150
+                    size_text: 19
+                    pos: 20, -45
+        AdaptableHeightGridLayout:
+            rows: 1
+            AdaptableHeightLabel:
+                text: 'CRC prędkości poprawne'
+            CheckBox:
+                id: car_speed_valid_checkbox
+                on_state: root.set_car_speed_valid(app)
+        AdaptableHeightGridLayout:
+            rows: 1
+            AdaptableHeightLabel:
+                text: 'Wykrywanie linii włączone'
+            CheckBox:
+                id: car_lines_enabled_checkbox
+                on_state: root.set_car_lines_enabled(app)
